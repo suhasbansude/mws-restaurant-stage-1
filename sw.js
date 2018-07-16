@@ -4,7 +4,6 @@ const DATA_CACHE_NAME = 'restaurantPWA_DATA';
 
 
 self.addEventListener('install', function(event) {
-  console.log('sw install');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(
@@ -33,7 +32,6 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('activate', function(e) {
-  console.log('[ServiceWorker] Activate');
   e.waitUntil(
     caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
@@ -48,12 +46,10 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(event) {
-  console.log('sw fetch');
-
 
   event.respondWith(
     caches.open(CACHE_NAME).then(function(cache) {
-      return cache.match(event.request).then(function (response) {
+      return cache.match(event.request,{ignoreSearch : true}).then(function (response) {
         return response || fetch(event.request).then(function(response) {
           cache.put(event.request, response.clone());
           return response;
